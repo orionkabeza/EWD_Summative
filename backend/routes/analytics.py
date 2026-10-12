@@ -195,6 +195,21 @@ def top_zones():
     # most tris first; equal counts: lower location_id first
     return {"data": top_k(rows, k, key=lambda r: (r["trips"], -r["location_id"]))}
 
-
 @analytics_bp.route("/top-routes")
 @cached
+def top_routes():
+    """Top K most frequent pickup-zone -> dropoff-zone pairs."""
+    k = _parse_k()
+    src = route_source(parse_filters(request.args), need_pickup_zone = True)
+    where = src.with_conditions(*_known_zones("t.pu_zone_id", "t.do_zone_id"))
+    rows = query(f"""
+        SELECT t.pu_zone_id AS ou_zone_id, pz.zone AS pu_zone, pz.borough AS pu_borough,
+               t.do_zone_id AS do_zone_id, dz.zone AS do_zone, dz.borough AS do_borough,
+               {src.metrics['trips']} AS trips,
+               {src.metrics['avg_fare']} AS avg_fare
+        FROM {src.from_sql}
+        JOIN zones dz ON dz.location_id = t.do_zone_id
+        {where}
+        GROUP BY t.pu_zone_id, t.do_zone_id """, src.params)
+    ranked = top_k(rows, k, key=lambda r: (r["trips"], -r["pu_zone_id"], -r["do_zone_id"]))
+    return {"data": ranked}
