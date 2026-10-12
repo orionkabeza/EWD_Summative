@@ -114,7 +114,7 @@ def trip_detail(trip_id):
         SELECT t.*,
                pz.zone AS pu_zone, pz.borough AS pu_borough,
                dz.zone AS do_zone, dz.borough AS do_borough,
-               pt.description AS payment_type, rc.description AS rate_code, v.name AS vendor_name
+               pt.description AS payment_type, rc.description AS rate_code, v.name AS vendor
         FROM trips t
         JOIN zones pz on pz.location_id = t.pu_zone_id
         JOIN zones dz on dz.location_id = t.do_zone_id
@@ -127,4 +127,4 @@ def trip_detail(trip_id):
     )
     if not row:
         return jsonify({"error": f"Trip {trip_id} not found"}), 404
-    return jsonify(row)
+    return jsonify({"data": row})

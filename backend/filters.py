@@ -22,7 +22,7 @@ RAW_METRICS = {
     "total_revenue": "ROUND(SUM(t.total_amount), 2)",
 }
 ZONE_ROLLUP_METRICS = {
-    "trips": "COUNT(*)",
+    "trips": "SUM(t.trips)",
     "avg_fare": "ROUND(SUM(t.sum_fare) / SUM(t.trips), 2)",
     "avg_distance": "ROUND(SUM(t.sum_distance) / SUM(t.trips), 2)",
     "avg_duration_min": "ROUND(SUM(t.sum_duration) / SUM(t.trips), 2)",

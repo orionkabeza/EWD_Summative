@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 DB_PATH = Path(os.environ.get("DATABASE_PATH", ROOT / "database" / "urban_mobility.db"))
-GEOJSON_PATH = Path(os.environ.get("ZONES_GEoJSON_PATH", ROOT / "data" / "processed" / "taxi_zones.geojson"))
+GEOJSON_PATH = Path(os.environ.get("ZONES_GEOJSON_PATH", ROOT / "data" / "processed" / "taxi_zones.geojson"))
 
 QUERY_TIME_LIMIT = float(os.environ.get("QUERY_TIME_LIMIT", 15))
 
