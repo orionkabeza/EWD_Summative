@@ -7,7 +7,7 @@ from pipeline.config import EXCLUDED_LOG_CSV, EXCLUSION_SUMMARY_JSON
 
 
 class ExclusionLog:
-    def__init__(self, csv_path=EXCLUDED_LOG_CSV, summary_path=EXCLUSION_SUMMARY_JSON):
+    def __init__(self, csv_path=EXCLUDED_LOG_CSV, summary_path=EXCLUSION_SUMMARY_JSON):
         self.csv_path = csv_path
         self.summary_path = summary_path
         self.rows_read = 0
@@ -17,7 +17,7 @@ class ExclusionLog:
         self._header_written = False
         self.csv_path.parent.mkdir(parents=True, exist_ok=True)
         if self.csv_path.exists():
-            self.csv_path_unlink()  # start every run with fresh log
+            self.csv_path.unlink()  # start every run with fresh log
 
     def record_chunk(self, n_read, clean_df, excluded_df):
         """Update counters and append the excluded rows of one chunk."""
@@ -25,12 +25,12 @@ class ExclusionLog:
         self.rows_kept += len(clean_df)
         self.rows_excluded += len(excluded_df)
         for reasons in excluded_df["reasons"]:
-            for code in reasons.split(","):
-                self.reason_counts[code] = sefl.reason_count.get(code, 0) + 1
-            if len(excluded_df):
-                excluded_df.to_csv(self.csv_path, mode="a",
-                                   index=False, header=not self._header_written)
-                self._header_written = True
+            for code in reasons.split(";"):
+                self.reason_counts[code] = self.reason_count.get(code, 0) + 1
+        if len(excluded_df):
+            excluded_df.to_csv(self.csv_path, mode="a",
+                               index=False, header=not self._header_written)
+            self._header_written = True
 
     def summary(self):
         """A row can break several rules, so reason counts can exceed rows_excluded."""
@@ -40,7 +40,7 @@ class ExclusionLog:
             "rows_read": self.rows_read,
             "rows_kept": self.rows_kept,
             "rows_excluded": self.rows_excluded,
-            "excluded_percent": round(100 * self.rows_ecluded / self.rows_read, 3) if self.rows_read else 0.0,
+            "excluded_percent": round(100 * self.rows_excluded / self.rows_read, 3) if self.rows_read else 0.0,
             "reason_counts": ordered,
         }
 
