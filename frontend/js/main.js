@@ -1,9 +1,9 @@
 (function () {
     let refreshToken = 0;
-    let ZoneRanking = "pickup";
+    let zoneRanking = "pickup";
 
     const byId = (id) => document.getElementById(id);
-    const cardof = (id) => byId(id).closest(".card");
+    const cardOf = (id) => byId(id).closest(".card");
 
     function showStatus(message){
         const banner = byId("status");
@@ -11,7 +11,7 @@
         banner.hidden = !message;
     }
     function setLoading(element, isloading){
-        if (element) element.classlist.togle("is-loading", isloading);
+        if (element) element.classList.toggle("is-loading", isloading);
 
     }
 

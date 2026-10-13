@@ -19,7 +19,7 @@
     <main class="wrap">
         <div id="status" class="status-banner" role="status" hidden></div>
 
-        <form id="filter" class="filter" aria-label="trip filter">
+        <form id="filters" class="filters" aria-label="trip filter">
             <div class="field"><label for="f-start">Start date</label>
             <input type="date" id="f-start" min="2019-01-01" max="2019-01-31">
             </div>
@@ -109,9 +109,9 @@
             <article class="card wide">
                 <h2>demand versus traffic speed through the day</h2>
                 <p class="card-note">Bars: trips per pickup hour. Line: average speed. When the bars rise and the line falls, the city is congested.</p>
-                <div class="chart-box"><canvas id="chart-daily" role="img" aria-label="trips and average speed by hour"></canvas></div>
+                <div class="chart-box"><canvas id="chart-hourly" role="img" aria-label="trips and average speed by hour"></canvas></div>
             </article>
-            
+
             <article class="card">
                 <h2>Trips per day</h2>
                 <div class="chart-box"><canvas id="chart-daily" role="img" aria-label="Trips per day"></canvas></div>
@@ -170,7 +170,7 @@
         <div class="wrap">data: NYC Taxi &amp; limousiine comission yellow-taxi trip records, january 2019. cleaned and enriched by your pipeline; ecluded records are logged for transparency.</div>
     </footer>
 
-    <script src="https: //cdnjs.cloudflare.com/ajax/libs/chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/api.js"></script>
     <script src="js/filters.js"></script>
