@@ -12,12 +12,12 @@ from pipeline.features import FEATURE_COLUMNS, add_features  # noqa: E402
 
 def make_trip(**overrides):
     trip = {
-        "pickup_ts": "2019-01-05 10:00:00", # a Saturday
+        "pickup_ts": "2019-01-05 10:00:00",  # a Saturday
         "dropoff_ts": "2019-01-05 10:30:00", # 30 minutes later
         "trip_distance": 6.0,
         "fare_amount": 20.0,
         "tip_amount": 4.0,
-        "payment_type_id": 1, 
+        "payment_type_id": 1,
     }
     trip.update(overrides)
     return trip
@@ -44,8 +44,8 @@ def test_fare_per_mile():
     assert features_for().fare_per_mile == round(20.0 / 6.0, 2)
 
 
-def test_tip_percentage_for_credit_card_payment():
-    assert features_for().tip_pct == 20.0 
+def test_tip_percentage_for_card_payment():
+    assert features_for().tip_pct == 20.0
 
 
 def test_tip_percentage_is_empty_for_cash():
@@ -55,7 +55,7 @@ def test_tip_percentage_is_empty_for_cash():
 def test_hour_and_day_of_week():
     row = features_for()
     assert row.pickup_hour == 10
-    assert row.pickup_dow == 5 # Saturday (Monday = 0)
+    assert row.pickup_dow == 5 # saturday (Monday = o)
 
 
 def test_zero_distance_does_not_crash_or_give_infinity():
