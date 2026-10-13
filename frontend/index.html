@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC taxi pulse: urban mobility data explorer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <p class="eyebrow">urban mobility data explorer</p>
+            <h1>NYC Taxi Pulse</h1>
+            <P class="lede">How New York moves: when people ride, where they go, and what it costs. Every number below comes from cleaned yellow-taxi trips for January 2019.</P>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <div id="status" class="status-banner" role="status" hidden></div>
+
+        <form id="filter" class="filter" aria-label="trip filter">
+            <div class="field"><label for="f-start">Start date</label>
+            <input type="date" id="f-start" min="2019-01-01" max="2019-01-31">
+            </div>
+            <div class="field"><label for="f-end">end date</label>
+            <input type="date" id="f-end" min="2019-01-01" max="2019-01-31">
+            </div>
+            <div class="field"><label for="f-hour-min">start hour</label>
+            <select id="f-hour-min"><option value="">any</option></select>
+            </div>
+            <div class="field"><label for="f-hour-max">end hour</label>
+            <select id="f-hour-max"><option value="">any</option></select>
+            </div>
+            <div class="field"><label for="f-min-distance">min distance</label>
+                <select id="f-min-distance">
+                    <option value="">any</option>
+                    <option value="1">1 min or more</option>
+                    <option value="2">2 min or more</option>
+                    <option value="3">3 min or more</option>
+                    <option value="5">5 min or more</option>
+                    <option value="10">10 min or more</option>
+                    <option value="20">20 min or more</option>
+                </select>
+            </div>
+            <div class="field"><label for="f-max-distance">max distance</label>
+                <select id="f-max-distance">
+                    <option value="">any</option>
+                    <option value="0.99">under 1 min</option>
+                    <option value="1.99">under 2 min</option>
+                    <option value="2.99">under 3 min</option>
+                    <option value="4.99">under 5 min</option>
+                    <option value="9.99">under 10 min</option>
+                    <option value="19.99">under 20 min</option>
+                </select>
+            </div>
+            <div class="field"><label for="f-min-fare">min fare</label>
+                <select id="f-min-fare">
+                    <option value="">any</option>
+                    <option value="5">$5 or more</option>
+                    <option value="10">$10 or more</option>
+                    <option value="15">$15 or more</option>
+                    <option value="20">$20 or more</option>
+                    <option value="30">$30 or more</option>
+                    <option value="50">$50 or more</option>
+                </select>
+            </div>
+            <div class="field"><label for="f-max-fare">max fare</label>
+                <select id="f-max-fare">
+                    <option value="">any</option>
+                    <option value="4.99">under $5</option>
+                    <option value="9.99">under $10</option>
+                    <option value="14.99">under $15</option>
+                    <option value="19.99">under $20</option>
+                    <option value="29.99">under $30</option>
+                    <option value="49.99">under $50</option>
+                </select>
+            </div>
+            <div class="field"><label for="f-borough">pickup borough</label>
+                <select id="f-borough"><option value="">all boroughs</option></select>
+            </div>
+            <div class="field"><label for="f-payment">payment</label>
+            <select id="f-payment">
+                <option value="">All payments</option>
+                <option value="1">credit card</option>
+                <option value="2">cash</option>
+                <option value="3">no charge</option>
+                <option value="4">dispute</option>
+            </select>
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn primary">apply filter</button>
+                <button type="button" id="reset-btn" class="btn">Reset</button>
+            </div>
+            <p id="filter-message" class="filter-message" role="alert"></p>
+        </form>
+
+        <section aria-labelledby="kpi-title">
+            <h2 id="kpi-title" class="visually-hidden">key figures</h2>
+            <div id="kpis" class="kpis"></div>
+        </section>
+
+        <section aria-labelledby="insight-tittle">
+            <h2 id="insight-tittle">what the data says</h2>
+            <div id="insights" class="insights"></div>
+        </section>
+
+        <section class="grid" aria-label="charts">
+            <article class="card wide">
+                <h2>demand versus traffic speed through the day</h2>
+                <p class="card-note">Bars: trips per pickup hour. Line: average speed. When the bars rise and the line falls, the city is congested.</p>
+                <div class="chart-box"><canvas id="chart-daily" role="img" aria-label="trips and average speed by hour"></canvas></div>
+            </article>
+            -----------------------------------------------------------------------
+            <article class="card">
+                <h2>Trips per day</h2>
+                <div class="chart-box"><canvas id="chart-daily" role="img" aria-label="Trips per day"></canvas></div>
+            </article>
+
+            <article class="card">
+                <h2>Pickups by borough</h2>
+                <div class="chart-box"><canvas id="chart-borough" role="img" aria-label="Pickups by borough"></canvas></div>
+            </article>
+
+            <article class="card">
+                <h2>Payment type</h2>
+                <p class="card-note">Hover for the average tip. Cash tips are not recorded by the meter.</p>
+                <div class="chart-box"><canvas id="chart-payment" role="img" aria-label="Trips by payment type"></canvas></div>
+            </article>
+
+            <article class="card">
+                <div class="card-head">
+                    <h2>Busiest zones</h2>
+                    <div class="segmented" role="group" aria-label="Rank zones by">
+                        <button type="button" class="seg active" data-by="pickup">Pickups</button>
+                        <button type="button" class="seg" data-by="dropoff">Dropoffs</button>
+                    </div>
+                </div>
+                <div class="chart-box tall"><canvas id="chart-zones" role="img" aria-label="Busiest zones"></canvas></div>
+            </article>
+
+            <article class="card wide">
+                <h2>Most frequent routes</h2>
+                <p class="card-note">Ranked with our own min-heap, not a library sort.</p>
+                <ol id="top-routes" class="routes"></ol>
+            </article>
+        </section>
+
+        <section class="card map-card" aria-labelledby="map-title">
+            <div class="card-head">
+                <h2 id="map-title">Where the city picks up</h2>
+                <label class="inline-label" for="map-metric">Colour zones by
+                    <select id="map-metric">
+                        <option value="trips">Number of pickups</option>
+                        <option value="avg_fare">Average fare</option>
+                    </select>
+                </label>
+            </div>
+            <div id="map" class="map" role="application" aria-label="Map of taxi zones"></div>
+        </section>
+
+        <section class="card" aria-labelledby="table-title">
+            <h2 id="table-title">Trip explorer</h2>
+            <div id="trips-table"></div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">data: NYC Taxi &amp; limousiine comission yellow-taxi trip records, january 2019. cleaned and enriched by your pipeline; ecluded records are logged for transparency.</div>
+    </footer>
+
+    <script src="https: //cdnjs.cloudflare.com/ajax/libs/chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/table.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
