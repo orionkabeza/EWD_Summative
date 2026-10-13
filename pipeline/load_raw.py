@@ -16,7 +16,7 @@ def iter_raw_chunks(path=TRIPS_CSV, chunksize=CHUNK_SIZE, nrows=None):
     """
     offset = 0
     for chunk in pd.read_csv(path, chunksize=chunksize, nrows=nrows, low_memory=False):
-        chunk.insert(0, "source_raw", range(
+        chunk.insert(0, "source_row", range(
             offset + 1, offset + len(chunk) + 1))
         offset += len(chunk)
         yield chunk
