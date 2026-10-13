@@ -5,8 +5,8 @@ import random
 import sys
 from pathlib import Path
 
-import pytest_lazyfixture
-syc.path.insert(0, str(Path(__file__).resolve().parents[2]))
+import pytest
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from backend.algorithms.min_heap import MinHeap #noqa:E402
 from backend.algorithms.topk import top_k #noqa: E402
@@ -20,7 +20,7 @@ def drain(heap):
 
 def test_pops_in_ascending_order():
     heap = MinHeap()
-    for values in [5, 3, 8, 1, 9, 2, 7]:
+    for value in [5, 3, 8, 1, 9, 2, 7]:
         heap.push(value)
     assert drain(heap) == [1, 2, 3, 5, 7, 8, 9]
 
@@ -65,7 +65,7 @@ def test_custom_key():
         heap.push(pair)
     assert [name for name, _ in drain(heap)] == ["b", "c", "a"]
 
-def tst_top_k_basic():
+def test_top_k_basic():
     assert top_k ([4, 9, 1, 7, 3, 8], 3, key=lambda x: x) == [9, 8, 7]
 
 def test_top_k_larger_then_n_returns_everything_ranked():
@@ -77,12 +77,12 @@ def test_top_k_zero_or_negative_or_empty():
     assert top_k([], 5, key=lambda x: x) ==[]
 
 def test_top_k_ties_are_broken_by_tuple_key():
-    rows [{"id": 5, "n":10}, {"id": 2, "n": 10}, {"id": 9, "n": 10}, {"id": 1, "n": 3}]
+    rows = [{"id": 5, "n":10}, {"id": 2, "n": 10}, {"id": 9, "n": 10}, {"id": 1, "n": 3}]
     ranked = top_k(rows, 2, key=lambda r: (r["n"], -r["id"]))
     assert [r["id"] for r in ranked] == [2, 5]
 
 def test_top_k_matches_sorted_oracle_on_random_data():
-    rng == random.Random(11)
+    rng = random.Random(11)
     for _ in range(50):
         data = [rng.randint(0, 200) for _ in range(rng.randint(0, 120))]
         k = rng.randint(1, 15)

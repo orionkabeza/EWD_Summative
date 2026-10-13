@@ -10,7 +10,7 @@ from pipeline.clean import DuplicateTracker, clean_chunk  # noqa:E402
 from pipeline.config import CLEAN_COLUMNS  # noqa:E402
 
 
-def make_row(**overides):
+def make_row(**overrides):
     """A valid raw row: tests overide one field to break one rule."""
     row = {
         "source_row": 1,

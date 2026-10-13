@@ -26,7 +26,7 @@ class ExclusionLog:
         self.rows_excluded += len(excluded_df)
         for reasons in excluded_df["reasons"]:
             for code in reasons.split(";"):
-                self.reason_counts[code] = self.reason_count.get(code, 0) + 1
+                self.reason_counts[code] = self.reason_counts.get(code, 0) + 1
         if len(excluded_df):
             excluded_df.to_csv(self.csv_path, mode="a",
                                index=False, header=not self._header_written)

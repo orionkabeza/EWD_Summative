@@ -14,7 +14,7 @@ from backend.algorithms.topk import top_k
 from backend.db import query, query_one
 from backend.filters import FilterError, parse_filters, route_source, zone_source
 
-analytics_bp = Blueprint("analytics", __name)
+analytics_bp = Blueprint("analytics", __name__)
 
 DEFAULT_K, MAX_K = 10, 100
 
@@ -23,8 +23,8 @@ DEFAULT_K, MAX_K = 10, 100
 #route, which sys nothing about mobility, so rankings exclude them.
 UNKNOWN_ZONE_IDS = (264, 265)
 
-_CASHE = {}
-_CASHE_LIMIT = 256
+_CACHE = {}
+_CACHE_LIMIT = 256
 
 def cached(view):
     """Cashe a view's JSON per (path, query string).
@@ -59,7 +59,7 @@ def _parse_k():
 @analytics_bp.route("/summary")
 @cached
 def summary():
-    src = zone_source(parse_filter(request.args))
+    src = zone_source(parse_filters(request.args))
     m = src.metrics
     row = query_one(f"""
         SELECT {m['trips']} AS trips,
@@ -113,7 +113,7 @@ def borough():
     rows = query(f"""
         SELECT pz.borough AS borough,
                {m['trips']} AS trips,
-               {m['avg_fare']} AS avg_fare
+               {m['avg_fare']} AS avg_fare,
                {m['avg_distance']} AS avg_distance,
                {m['avg_tip_pct']} AS avg_tip_pct
         FROM {src.from_sql} {src.where}
@@ -129,15 +129,15 @@ def payment_types():
     src = zone_source(parse_filters(request.args))
     m = src.metrics
     rows = query(f"""
-        SELECT t.payment_types_id AS payment_type_id,
+        SELECT t.payment_type_id AS payment_type_id,
                 pt.description AS description,
                 {m['trips']} AS trips,
                 {m['avg_fare']} AS avg_fare,
                 {m['avg_tip_pct']} AS avg_tip_pct
         FROM {src.from_sql}
-        JOIN payment_types pt ON pt.pt.payment_types_id = t.payment_type_id
+        JOIN payment_types pt ON pt.payment_type_id = t.payment_type_id
         {src.where}
-        GROUP BY t.payment_types_id, pt.description
+        GROUP BY t.payment_type_id, pt.description
     """, src.params)
     ranked = top_k(rows, len(rows), key=lambda r: (r["trips"], -r["payment_type_id"]))
     return {"data": ranked}
@@ -174,7 +174,7 @@ def top_zones():
 
     if by == "pickup":
         src = zone_source(filters, need_pickup_zone=True)
-        where = src.with_conditions(*_know_zones("t.pu_zone_id"))
+        where = src.with_conditions(*_known_zones("t.pu_zone_id"))
         sql = f"""
             SELECT pz.location_id AS location_id, pz.zone AS zone, pz.borough AS borough,
                    {src.metrics['trips']} AS trips
@@ -203,7 +203,7 @@ def top_routes():
     src = route_source(parse_filters(request.args), need_pickup_zone = True)
     where = src.with_conditions(*_known_zones("t.pu_zone_id", "t.do_zone_id"))
     rows = query(f"""
-        SELECT t.pu_zone_id AS ou_zone_id, pz.zone AS pu_zone, pz.borough AS pu_borough,
+        SELECT t.pu_zone_id AS pu_zone_id, pz.zone AS pu_zone, pz.borough AS pu_borough,
                t.do_zone_id AS do_zone_id, dz.zone AS do_zone, dz.borough AS do_borough,
                {src.metrics['trips']} AS trips,
                {src.metrics['avg_fare']} AS avg_fare
