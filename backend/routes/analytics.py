@@ -23,8 +23,8 @@ DEFAULT_K, MAX_K = 10, 100
 #route, which sys nothing about mobility, so rankings exclude them.
 UNKNOWN_ZONE_IDS = (264, 265)
 
-_CASHE = {}
-_CASHE_LIMIT = 256
+_CACHE = {}
+_CACHE_LIMIT = 256
 
 def cached(view):
     """Cashe a view's JSON per (path, query string).

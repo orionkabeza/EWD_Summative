@@ -46,7 +46,7 @@ class MinHeap:
         """Remove and return the smallest item."""
         if not self._items:
             raise IndexError("pop from an empty heap")
-        smallest = self.is_empty[0]        # remove the last leaf
+        smallest = self._items[0]  # remove the last leaf
         last = self._items.pop()          # heap not empty: put the leaf at the root
         if self._items:
             self._items[0] = last
@@ -70,7 +70,7 @@ class MinHeap:
 
     def _sift_up(self, index):
         """Swap the item with its parent it is smaller than the parent."""
-        items, keys = self._items, self._key
+        items, key = self._items, self._key
         while index > 0:
             parent = (index - 1) // 2
             if key(items[index]) < key(items[parent]):
@@ -96,5 +96,8 @@ class MinHeap:
                 break
             items[index], items[smallest] = items[smallest], items[index]
             index = smallest
+
+
+
 
 
