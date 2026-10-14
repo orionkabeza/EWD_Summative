@@ -2,7 +2,7 @@
 
 A full-stack dashboard that explores New York City yellow-taxi trips (January 2019, about 7.67 million raw trips). A Python pipeline cleans and enriches the data, SQLite stores it, a Flask API serves it, and a browser dashboard lets you filter, chart and map urban mobility patterns.
 
-- **Video walkthrough:** `<ADD LINK HERE>`
+- **Video walkthrough:** <https://youtu.be/P3MYColrstw>
 - **Team Task Sheet:** <https://docs.google.com/spreadsheets/d/1y9pAmzp5ePn7fPlmByd8SkJW3g1vDCEHm6u1jgukxtk/edit?usp=sharing>.
 - **Trello Board:** [Trello.com](https://trello.com/invite/b/6acde4055e06ce6346c76f96/ATTIbd6fb7ba7e48f45f821c206580f57d84C334E2DB/ewd-summative-urban-mobility-data-explorer-team-5)
 
