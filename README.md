@@ -4,7 +4,7 @@ A full-stack dashboard that explores New York City yellow-taxi trips (January 20
 
 - **Video walkthrough:** `<ADD LINK HERE>`
 - **Team Task Sheet:** <https://docs.google.com/spreadsheets/d/1y9pAmzp5ePn7fPlmByd8SkJW3g1vDCEHm6u1jgukxtk/edit?usp=sharing>.
-**Trello Board:** <[Link](https://trello.com/invite/b/6acde4055e06ce6346c76f96/ATTIbd6fb7ba7e48f45f821c206580f57d84C334E2DB/ewd-summative-urban-mobility-data-explorer-team-5)>
+- **Trello Board:** [Trello.com](https://trello.com/invite/b/6acde4055e06ce6346c76f96/ATTIbd6fb7ba7e48f45f821c206580f57d84C334E2DB/ewd-summative-urban-mobility-data-explorer-team-5)
 
 ## What it does
 
