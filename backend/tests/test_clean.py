@@ -68,8 +68,8 @@ def test_unparseable_timestamp_counts_as_missing():
 
 def test_pickup_out_of_range():
     assert_excluded_for("pickup_out_of_range",
-                        tpep_pickup_datetime="2008-12-31 23: 00: 00",
-                        tpep_dropoff_datetime="2008-12-31 23: 30:00")
+                        tpep_pickup_datetime="2008-12-31 23:00:00",
+                        tpep_dropoff_datetime="2008-12-31 23:30:00")
 
 
 def test_dropoff_not_after_pickup():
